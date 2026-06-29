@@ -5,9 +5,16 @@ set of countries, as a proxy for median household disposable income.
 
 ## The chart
 
-- **[household_consumption_per_capita.html](household_consumption_per_capita.html)** —
-  a single self-contained HTML file. Open it in any browser (it loads Plotly
-  from a CDN, so an internet connection is needed the first time).
+- **[▶ View the live chart](https://htmlpreview.github.io/?https://github.com/sgt101/economics/blob/main/household_consumption_per_capita.html)** —
+  renders the interactive page in your browser.
+- Source file: [household_consumption_per_capita.html](household_consumption_per_capita.html)
+  (GitHub shows this as raw HTML; use the link above to render it). It is a
+  single self-contained file and loads Plotly from a CDN, so an internet
+  connection is needed.
+
+> Prefer a cleaner URL? Enable **GitHub Pages** for this repo (Settings → Pages →
+> deploy from `main`), then the chart is served directly at
+> `https://sgt101.github.io/economics/household_consumption_per_capita.html`.
 
 It shows two stacked charts that share the same controls:
 
