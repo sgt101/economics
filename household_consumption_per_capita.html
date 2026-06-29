@@ -113,7 +113,14 @@ function render() {
   Plotly.react('chart2', traces2, layout2, opts);
 }
 
-render();
+// Wait for the Plotly CDN script to finish loading before the first render.
+// (Some viewers, e.g. htmlpreview.github.io, inject scripts asynchronously,
+//  so Plotly may not be defined when this inline script first runs.)
+function start() {
+  if (typeof Plotly === 'undefined') { setTimeout(start, 50); return; }
+  render();
+}
+start();
 </script>
 </body>
 </html>
