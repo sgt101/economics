@@ -28,6 +28,7 @@ COUNTRIES = {
     'ESP': 'Spain',
     'CHN': 'China',
     'IND': 'India',
+    'CAN': 'Canada',
 }
 
 INDICATOR = 'NE.CON.PRVT.PC.KD'
@@ -45,6 +46,7 @@ COLORS = {
     'Spain': '#bcbd22',
     'China': '#000000',
     'India': '#7f7f7f',
+    'Canada': '#393b79',
 }
 
 
@@ -110,6 +112,8 @@ html = """<!DOCTYPE html>
               border-radius: 8px; }}
   .controls h2 {{ font-size: 14px; margin: 0 0 8px; }}
   label.country {{ display: block; margin: 4px 0; font-size: 14px; cursor: pointer; }}
+  label.country.disabled {{ color: #A8A5A2; cursor: not-allowed; }}
+  label.country.disabled .swatch {{ opacity: 0.3; }}
   select {{ font-family: Arial; font-size: 14px; padding: 4px; width: 100%; }}
   .swatch {{ display: inline-block; width: 12px; height: 12px; margin-right: 6px;
             border-radius: 2px; vertical-align: middle; }}
@@ -146,6 +150,7 @@ CFG.startYears.forEach(y => {{
 }});
 
 const boxWrap = document.getElementById('countryBoxes');
+const boxes = {{}};  // country -> {{cb, lab}}
 CFG.countries.forEach(c => {{
   const lab = document.createElement('label');
   lab.className = 'country';
@@ -157,15 +162,31 @@ CFG.countries.forEach(c => {{
   lab.appendChild(cb); lab.appendChild(sw);
   lab.appendChild(document.createTextNode(' ' + c));
   boxWrap.appendChild(lab);
+  boxes[c] = {{ cb: cb, lab: lab }};
 }});
 startSel.addEventListener('change', render);
 
+// Grey out / disable any country with no data at the selected start year.
+// The checkbox keeps its checked state so the choice is restored if a year
+// with data is selected again.
+function updateAvailability(start) {{
+  CFG.countries.forEach(c => {{
+    const hasBase = CFG.data[c][start] != null;
+    boxes[c].cb.disabled = !hasBase;
+    boxes[c].lab.classList.toggle('disabled', !hasBase);
+  }});
+}}
+
 function selectedCountries() {{
-  return Array.from(boxWrap.querySelectorAll('input:checked')).map(cb => cb.value);
+  // checked AND not disabled (disabled = no baseline at this start year)
+  return Array.from(boxWrap.querySelectorAll('input:checked'))
+    .filter(cb => !cb.disabled)
+    .map(cb => cb.value);
 }}
 
 function render() {{
   const start = parseInt(startSel.value, 10);
+  updateAvailability(start);
   const years = CFG.years.filter(y => y >= start);
   const chosen = selectedCountries();
   const traces = [];   // normalized (index)
